@@ -1,0 +1,20 @@
+/* Get rid of all borders, margins, and padding. */
+* {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+/* Make the html/body 100% width and height. */
+html, body {
+  width: 100%;
+  width: 100%;
+}
+
+/* Place the canvas at the top left and make sure it displays block style.*/
+/* The canvas is (re)sized using JavaScript. */
+#drawspace {
+  top: 0;
+  left: 0;
+  display: block;
+}
