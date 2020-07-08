@@ -1,5 +1,7 @@
 # Circular: a simple drawing app for fun
 
+[Live demo: https://ianmcloughlin.github.io/circular/](https://ianmcloughlin.github.io/circular/)
+
 This is a static web application that draws circles in different sizes and
 colours when the mouse moves or you drag on a touch screen device. Clicking
 with the left mouse button will stop and start the drawing.
