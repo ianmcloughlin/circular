@@ -89,7 +89,7 @@ drawspace.addEventListener('mousemove', (e) => {
 
 // Add an event listener for touch moves.
 drawspace.addEventListener('touchmove', (e) => {
-  e.preventDefault();
+  //e.preventDefault();
   drawNext(e);
 });
 
