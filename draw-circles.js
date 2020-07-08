@@ -22,10 +22,29 @@ var radius = 10;
 // Drawing or not drawing.
 var drawing = true;
 
+
 // The canvas.
 var drawspace = document.getElementById("drawspace");
 // The canvas's 2D context.
 var ctx = drawspace.getContext("2d");
+
+
+// Draw the next circle.
+function drawNext(x, y) {
+  if (drawing) {
+    // Set the fill colour.
+    ctx.fillStyle = colours[colour_i];
+    // Draw a circle.
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+    ctx.fill();
+    // Change to next colour.
+    colour_i = (colour_i + 1) % colours.length;
+    // Resize the circle.
+    radius = (radius + 1) % 20;
+  }
+}
+
 
 // What to do when the window is resized.
 function resizeCanvas() {
@@ -47,53 +66,47 @@ function resizeCanvas() {
 
 };
 
-// Webkit/Blink will fire this on load, but Gecko doesn't.
-window.onresize = resizeCanvas;
+// Global resize timer.
+var resizetimer;
 
-// So we fire it manually...
-resizeCanvas();
-
-// Get the mouse position on an element.
-function getMousePos(canvas, e) {
-  // Get the bounding rectangle of the element.
-  var rect = canvas.getBoundingClientRect();
-  // Return the object minus the bounding coordinates.
-  return {
-    x: e.clientX - rect.left,
-    y: e.clientY - rect.top
-  };
+// Set a delay for resizing to stop resizeCanvas triggering repeatedly.
+function onResize() {
+  // Clear the current timer, if there is one.
+  clearTimeout(resizetimer);
+  // Create a new timer.
+  resizetimer = setTimeout(resizeCanvas, 200);
 }
 
-// Draw the next circle.
-function drawNext(e) {
-  if (drawing) {
-    // Resize the circle.
-    radius = (radius + 1) % 20;
-    // Get the mouse position on the canvas.
-    var mousepos = getMousePos(drawspace, e);
-    // Set the fill colour.
-    ctx.fillStyle = colours[colour_i];
-    // Draw a circle.
-    ctx.beginPath();
-    ctx.arc(mousepos.x, mousepos.y, radius, 0, 2 * Math.PI, false);
-    ctx.fill();
-    // Change to next colour.
-    colour_i = (colour_i + 1) % colours.length;
-  }
+// What to do once we startup.
+function startup() {
+
+  // Add an event listener for mouse moves.
+  drawspace.addEventListener('pointermove',  (e) => {
+    
+    // Get the bounding rectangle of the drawing space.
+    var bounds = drawspace.getBoundingClientRect();
+    
+    // Calculate the point on the canvas.
+    var x = e.clientX - bounds.left;
+    var y = e.clientY - bounds.top;
+    
+    // Draw the circle.
+    drawNext(x, y);
+
+  });
+
+  // Add an event listener for clicks.
+  drawspace.addEventListener('click', (e) => {
+    // Start or stop drawing.
+    drawing = !drawing;
+  });
+
+  // Add a window resize listener.
+  window.addEventListener('resize', onResize);
+  // And trigger it at the start.
+  resizeCanvas();
+
 }
 
-// Add an event listener for mouse moves.
-drawspace.addEventListener('mousemove', (e) => {
-  drawNext(e);
-});
-
-// Add an event listener for touch moves.
-drawspace.addEventListener('touchmove', (e) => {
-  //e.preventDefault();
-  drawNext(e);
-});
-
-// Add an event listener for clicks.
-drawspace.addEventListener('click', (e) => {
-  drawing = !drawing;
-});
+// From: https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
+document.addEventListener("DOMContentLoaded", startup);
